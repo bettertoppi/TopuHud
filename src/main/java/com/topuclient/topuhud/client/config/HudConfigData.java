@@ -18,6 +18,8 @@ public class HudConfigData {
         elements.put("cps", new ElementConfig(true, 10, 130));
         elements.put("combo", new ElementConfig(true, 10, 150));
         elements.put("modules", new ElementConfig(true, 10, 170));
+        elements.put("particles", new ElementConfig(true, 10, 190));
+        elements.put("tags", new ElementConfig(true, 10, 210));
     }
 
     public static class ElementConfig {

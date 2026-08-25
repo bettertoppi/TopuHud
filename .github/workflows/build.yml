@@ -1,0 +1,111 @@
+name: Build TopuHud Multi-Version
+
+on:
+  push:
+    branches:
+      - mod-development
+  pull_request:
+    branches:
+      - mod-development
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mc-version: ['1.21.1', '1.21.4', '1.21.8', '1.21.11']
+        include:
+          - mc-version: '1.21.1'
+            fabric-api: '0.97.0+1.21.1'
+          - mc-version: '1.21.4'
+            fabric-api: '0.100.0+1.21.4'
+          - mc-version: '1.21.8'
+            fabric-api: '0.102.0+1.21.8'
+          - mc-version: '1.21.11'
+            fabric-api: '0.103.0+1.21.11'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build TopuHud for MC ${{ matrix.mc-version }}
+        run: |
+          sed -i 's/minecraft_version=.*/minecraft_version=${{ matrix.mc-version }}/' gradle.properties
+          sed -i 's/fabric_version=.*/fabric_version=${{ matrix.fabric-api }}/' gradle.properties
+          sed -i 's/mod_version=.*/mod_version=1.0.0+mc${{ matrix.mc-version }}/' gradle.properties
+          cat gradle.properties
+          chmod +x gradlew
+          ./gradlew clean build
+
+      - name: Rename JAR for MC ${{ matrix.mc-version }}
+        run: |
+          mkdir -p build/libs-output
+          cp build/libs/topuhud-*.jar build/libs-output/topuhud-1.0.0+mc${{ matrix.mc-version }}.jar
+          ls -la build/libs-output/
+
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: topuhud-mc${{ matrix.mc-version }}
+          path: build/libs-output/topuhud-*.jar
+          retention-days: 30
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/topuhud-mc1.21.1/topuhud-*.jar
+            artifacts/topuhud-mc1.21.4/topuhud-*.jar
+            artifacts/topuhud-mc1.21.8/topuhud-*.jar
+            artifacts/topuhud-mc1.21.11/topuhud-*.jar
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-modrinth:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+      
+      - name: Upload to Modrinth
+        uses: actions/upload-artifact@v4
+        with:
+          name: modrinth-upload
+          path: artifacts/
+          retention-days: 1

@@ -25,6 +25,8 @@ public class HudManager {
         hudElements.add(new CpsCounterElement(10, 130));
         hudElements.add(new ComboCounterElement(10, 150));
         hudElements.add(new ModuleDisplayElement(10, 170));
+        hudElements.add(new ParticleEffectElement(10, 190));
+        hudElements.add(new PlayerTagElement(10, 210));
     }
 
     public void toggleHud() {
