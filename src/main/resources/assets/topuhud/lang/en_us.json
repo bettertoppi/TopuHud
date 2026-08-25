@@ -1,5 +1,6 @@
 {
   "key.topuhud.toggle_hud": "Toggle HUD",
-  "key.topuhud.edit_hud": "Edit HUD",
+  "key.topuhud.edit_hud": "Edit HUD (Hold R + Control)",
+  "key.topuhud.settings": "HUD Settings",
   "category.topuhud.main": "TopuHud"
 }
