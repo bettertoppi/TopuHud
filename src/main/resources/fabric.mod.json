@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "topuhud",
+  "version": "${version}",
+  "name": "TopuHud",
+  "description": "A comprehensive utility HUD mod with customizable UI elements and performance monitoring.",
+  "authors": [
+    "TopuClient"
+  ],
+  "contact": {
+    "homepage": "https://github.com/bettertoppi/Topuhud",
+    "sources": "https://github.com/bettertoppi/Topuhud"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "com.topuclient.topuhud.TopuHudMod"
+    ],
+    "client": [
+      "com.topuclient.topuhud.client.TopuHudClient"
+    ]
+  },
+  "mixins": [
+    "topuhud.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "1.20.x",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
