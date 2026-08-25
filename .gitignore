@@ -1,0 +1,32 @@
+# Gradle
+.gradle/
+build/
+bins/
+run/
+
+# IntelliJ
+*.iws
+*.iml
+*.ipr
+.idea/
+out/
+
+# VS Code
+.classpath
+.project
+.settings/
+bin/
+.vscode/
+
+# Mac
+.DS_Store
+
+# Minecraft
+runs/
+
+# Config
+config/
+
+# IDE-specific
+*.class
+*.log
